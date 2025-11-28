@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary - Warm Gold (Prosperity) -->
+    <color name="gold_primary">#F5A623</color>
+    <color name="gold_light">#FFD93D</color>
+    <color name="gold_dark">#E09400</color>
+
+    <!-- Safe Zone - Teal -->
+    <color name="teal_safe">#00B894</color>
+    <color name="teal_dark">#00A884</color>
+
+    <!-- Warning/Danger -->
+    <color name="orange_warning">#FF6B35</color>
+    <color name="red_danger">#E74C3C</color>
+
+    <!-- Neomorphism Base -->
+    <color name="background">#E8E8E8</color>
+    <color name="surface">#F0F0F0</color>
+    <color name="shadow_dark">#BEBEBE</color>
+    <color name="shadow_light">#FFFFFF</color>
+
+    <!-- Text -->
+    <color name="text_primary">#2D3436</color>
+    <color name="text_secondary">#636E72</color>
+    <color name="text_on_gold">#FFFFFF</color>
+
+    <!-- Launcher Icon -->
+    <color name="ic_launcher_background">#E8E8E8</color>
+</resources>

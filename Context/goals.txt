@@ -1,0 +1,99 @@
+This is fantastic news. Having the **ML Model POC** (Expense Prediction), the **Web App POC** (Onboarding), and the **SMS Parsing Script** already done puts you *miles ahead* of the competition.
+
+Your 12-hour hackathon is no longer about "building from scratch." It is about **INTEGRATION** and **UX POLISH**.
+
+Here is the definitive **Total Feature Set** and **Build Plan** to win on Quality, Implementation, and Impact.
+
+---
+
+### I. The Blueprint: Total Feature Set (4 Pages Only)
+*This is the "Golden Path" flow for the judges.*
+
+#### **1. Onboarding (The Hook) - *Reuse your Web POC logic here***
+* **The Feature:** "Akinator-style" Voice Chat.
+* **Visual:** A full-screen chat interface (WhatsApp style but cleaner). The Agent asks: "Do you drive a bike?" -> "Yes" -> "I bet you spend ₹3k on fuel."
+* **The Magic:** At the end, it generates a **"Financial Horoscope"** for Rohan using your **ML Model**.
+    * *Display:* "Rohan, based on our data, your next month's predicted expense is ₹12,000 - ₹14,000." (This ticks the **Implementation** box).
+
+#### **2. Home Page (The Cockpit) - *The Centerpiece***
+* **The Feature:** The **Nischint Meter** (Safe-to-Spend).
+* **Visual:**
+    * **Top:** A speedometer gauge.
+        * *Green Zone:* Safe to spend.
+        * *Red Zone:* Save mode (EMI due).
+    * **Center:** The **Floating Agent Mic** (Your main interaction point).
+    * **Bottom Card:** "Upcoming Prediction" (Data from your ML POC). e.g., "Predicted low income next Tuesday."
+* **Action:** A massive "Add Cash" button (for tips).
+
+#### **3. The Tracker (The Ledger) - *Integrate your SMS Script here***
+* **The Feature:** Automated Expense Categorization.
+* **Visual:**
+    * **Top:** A Toggle Switch: **"Dhanda" (Business)** vs **"Ghar" (Personal)**.
+    * **List:** Transaction feed.
+    * **The Magic:** Use your **Python SMS script** logic here. Even if you can't read live SMS on the judge's phone, have a button "Simulate SMS Sync" that runs your script on a dummy text file and populates this list instantly. This proves **Technical Depth**.
+
+#### **4. Goals (The Reward) - *Gamification***
+* **The Feature:** Visual Savings.
+* **Visual:** A large image of a **Bike**. As Rohan saves money, the bike fills with green color.
+* **Impact:** Include a "Scratch Card" pop-up. "You saved for 3 days! Scratch to win a data pack coupon." (This covers the **Business Model** - affiliate partnerships).
+
+---
+
+### II. Visual Mockup & Layout (Top to Bottom)
+
+Here is how the app should look physically. Pass this description to your Designer/Vibe Coder.
+
+**Color Palette:**
+* Primary: **Prosperity Green** (Hex: `#2E7D32`) - For Savings/Safe.
+* Alert: **EMI Orange** (Hex: `#EF6C00`) - For Due Dates.
+* Background: **Off-White/Paper** (Hex: `#F5F5F5`) - Easy on eyes.
+
+**The Navigation Bar (Bottom):**
+1.  **Home** (House Icon)
+2.  **Tracker** (Wallet Icon)
+3.  **AGENCY/MIC** (Large Floating Button in Center)
+4.  **Goals** (Trophy Icon)
+
+---
+
+### III. The Build Strategy: How to Start (Hour by Hour)
+
+Since you have 3 people and existing code, split the work like this:
+
+#### **Phase 1: The Skeleton (Hours 0 - 3)**
+* **Vibe Coder 1 (The Integrator):**
+    * Take your **Python SMS script** and **ML Model**. Wrap them in a simple API (FastAPI or Flask) or a Supabase Edge Function.
+    * *Goal:* We need to send a request `get_prediction(user_id)` and get a JSON response `{"range": "12k-15k"}`.
+* **Vibe Coder 2 (The UI Builder):**
+    * Use **Lovable/Claude** to generate the UI Shell.
+    * *Prompt:* "Mobile first React app, bottom navigation bar with 4 items. Home page has a gauge chart. Color scheme is Green #2E7D32."
+* **Designer:**
+    * Create the **"Bike Filling" Animation/SVG**.
+    * Create the **"Agent Avatar"**.
+
+#### **Phase 2: The Brain Transplant (Hours 3 - 7)**
+* **Vibe Coder 1 & 2:** Connect the UI to the Logic.
+    * **Home Page:** When the page loads, fetch the "Predicted Range" from your ML POC and display it under the meter.
+    * **Tracker Page:** Connect the "Simulate Sync" button to your SMS parsing logic. Show the parsed data in the list.
+    * **Onboarding:** Port the logic from your Web App POC. If the web app is React, copy-paste the component. If not, ask Claude to "Convert this logic to React."
+
+#### **Phase 3: The "Agentic" Layer (Hours 7 - 10)**
+* **All Hands:** Implement the **Voice Button**.
+    * Use a simple speech-to-text API.
+    * *Hardcode the Demo Path:* If the user says "Bike", the app *must* navigate to the Goal page. If the user says "Income", it *must* add money.
+    * *Why:* This satisfies the **"Agentic AI"** requirement in the problem statement.
+
+#### **Phase 4: Polish & Pitch (Hours 10 - 12)**
+* **Designer:** Fix the fonts (Use a clean Google Font like 'Poppins' or 'Hind' for Indian context).
+* **Business Model Check:** Add a small "Verified by Nischint" badge on the Goal page to hint at the "Freemium/Trust" model.
+
+---
+
+### Summary Checklist for Judges
+1.  **Quality:** Does the Onboarding flow feel personal? (Yes, Akinator).
+2.  **Implementation:** Did you use the ML Model? (Yes, it drives the prediction widget).
+3.  **Impact:** Does the "Safe-to-Spend" meter stop debt? (Yes, visually).
+4.  **Completion:** Do all 4 nav buttons work? (Yes).
+5.  **Business Model:** Are there rewards/partnerships visible? (Yes, on Goal page).
+
+**Start with Page 2 (Home Page) and the Navigation Bar. That is the anchor.** Go!

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Nischint</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_tracker">Tracker</string>
+    <string name="nav_goals">Goals</string>
+
+    <!-- Home Screen -->
+    <string name="safe_to_spend">Safe to Spend</string>
+    <string name="add_cash">Paisa Add Karo</string>
+    <string name="prediction_title">Agle Hafte</string>
+    <string name="welcome">Namaste</string>
+
+    <!-- Tracker Screen -->
+    <string name="business">Dhanda</string>
+    <string name="personal">Ghar</string>
+    <string name="simulate_sms">SMS Sync Karo</string>
+    <string name="no_transactions">Koi kharcha nahi</string>
+
+    <!-- Goals Screen -->
+    <string name="my_goal">Meri Bike</string>
+    <string name="streak">din ka streak! 🔥</string>
+    <string name="scratch_card">Scratch Karo!</string>
+    <string name="goal_progress">Progress</string>
+
+    <!-- Voice Input -->
+    <string name="voice_listening">Bol raha hoon...</string>
+    <string name="voice_prompt">Kya bolna hai?</string>
+    <string name="voice_hint">Bol: \'Bike\', \'Tracker\', \'Income\'</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_welcome">Namaste! Main Nischint hoon</string>
+    <string name="horoscope_title">Tera Financial Horoscope</string>
+
+    <!-- Common -->
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="save">Save</string>
+    <string name="continue_text">Continue</string>
+</resources>
