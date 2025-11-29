@@ -132,28 +132,37 @@ object MockData {
         OnboardingQuestion(
             id = "q1",
             text = "Kya tum delivery ka kaam karte ho? 🛵",
-            options = listOf("Haan, Zomato/Swiggy", "Haan, Amazon/Flipkart", "Nahi, kuch aur")
+            options = listOf("Haan, Zomato/Swiggy", "Haan, Amazon/Flipkart", "Nahi, kuch aur"),
+            isFinal = false,
+            isAiGenerated = false  // Pre-made, not AI-generated
         ),
         OnboardingQuestion(
             id = "q2",
             text = "Tumhara apna bike hai ya rent pe hai?",
-            options = listOf("Apna hai", "Rent pe hai", "Nahi hai")
+            options = listOf("Apna hai", "Rent pe hai", "Nahi hai"),
+            isFinal = false,
+            isAiGenerated = false
         ),
         OnboardingQuestion(
             id = "q3",
             text = "Mahine mein kitna petrol lagta hai? ⛽",
-            options = listOf("₹2000 se kam", "₹2000-4000", "₹4000 se zyada")
+            options = listOf("₹2000 se kam", "₹2000-4000", "₹4000 se zyada"),
+            isFinal = false,
+            isAiGenerated = false
         ),
         OnboardingQuestion(
             id = "q4",
             text = "Koi loan ya EMI chal rahi hai?",
-            options = listOf("Haan, EMI hai", "Nahi, koi loan nahi")
+            options = listOf("Haan, EMI hai", "Nahi, koi loan nahi"),
+            isFinal = false,
+            isAiGenerated = false
         ),
         OnboardingQuestion(
             id = "q5",
             text = "Kya save karna chahte ho? 🎯",
             options = listOf("Naya Bike", "Emergency Fund", "Family ke liye", "Kuch nahi socha"),
-            isFinal = true
+            isFinal = true,
+            isAiGenerated = false
         )
     )
     

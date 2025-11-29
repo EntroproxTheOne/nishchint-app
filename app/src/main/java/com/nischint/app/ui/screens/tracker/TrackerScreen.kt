@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.*
@@ -19,10 +20,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.platform.LocalContext
 import com.nischint.app.data.api.MockData
 import com.nischint.app.data.models.Transaction
 import com.nischint.app.ui.components.*
 import com.nischint.app.ui.theme.*
+import com.nischint.app.utils.rememberSmsPermission
+import com.nischint.app.utils.SmsPermissionRationaleDialog
+import com.nischint.app.utils.SmsPermissionDeniedDialog
+import com.nischint.app.utils.openAppSettings
+import com.nischint.app.utils.rememberImagePicker
 import kotlinx.coroutines.delay
 
 @Preview(showBackground = true, backgroundColor = 0xFFE8E8E8)
@@ -35,9 +42,49 @@ fun TrackerScreenPreview() {
 
 @Composable
 fun TrackerScreen(
-    viewModel: TrackerViewModel = viewModel()
+    viewModel: TrackerViewModel? = null
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    // Get Application context first
+    val application = LocalContext.current.applicationContext as android.app.Application
+    
+    // Create ViewModel with Application context inside composable body
+    val actualViewModel: TrackerViewModel = viewModel ?: viewModel(
+        factory = object : androidx.lifecycle.ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+                return TrackerViewModel(application) as T
+            }
+        }
+    )
+    
+    val context = LocalContext.current
+    val uiState by actualViewModel.uiState.collectAsState()
+    
+    // SMS Permission handling
+    var showSmsPermissionRationale by remember { mutableStateOf(false) }
+    var showSmsPermissionDenied by remember { mutableStateOf(false) }
+    val (smsPermissionState, requestSmsPermission) = rememberSmsPermission()
+    
+    // Screenshot picker
+    val pickImage = rememberImagePicker { uri ->
+        uri?.let { actualViewModel.parseScreenshot(it) }
+    }
+    
+    // Handle SMS sync with permission check
+    val handleSmsSync: () -> Unit = {
+        when (smsPermissionState) {
+            is com.nischint.app.utils.SmsPermissionState.Granted -> {
+                actualViewModel.parseSmsTransactions()
+            }
+            is com.nischint.app.utils.SmsPermissionState.NotRequested,
+            is com.nischint.app.utils.SmsPermissionState.Denied -> {
+                showSmsPermissionRationale = true
+            }
+            is com.nischint.app.utils.SmsPermissionState.PermanentlyDenied -> {
+                showSmsPermissionDenied = true
+            }
+        }
+    }
     
     Column(
         modifier = Modifier
@@ -49,7 +96,7 @@ fun TrackerScreen(
             text = "📊 Tracker",
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
-            color = TextPrimary
+            color = TextWhite  // Updated to TextWhite
         )
         
         Spacer(modifier = Modifier.height(16.dp))
@@ -57,16 +104,16 @@ fun TrackerScreen(
         // Category Toggle
         CategoryToggle(
             selectedBusiness = uiState.showBusiness,
-            onToggle = { viewModel.toggleCategory() }
+            onToggle = { actualViewModel.toggleCategory() }
         )
         
         Spacer(modifier = Modifier.height(16.dp))
         
-        // Simulate SMS Sync Button
+        // SMS Sync Button
         NeomorphicButton(
-            onClick = { viewModel.simulateSmsSync() },
+            onClick = handleSmsSync,
             modifier = Modifier.fillMaxWidth(),
-            backgroundColor = TealSafe
+            backgroundColor = GreenSafe  // Green for safe/sync action
         ) {
             Icon(
                 imageVector = Icons.Default.Sync,
@@ -75,7 +122,28 @@ fun TrackerScreen(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = if (uiState.isSyncing) "Syncing..." else "SMS Sync Karo",
+                text = if (uiState.isSyncing) "Parsing SMS..." else "SMS Parse Karo",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+        
+        Spacer(modifier = Modifier.height(12.dp))
+        
+        // Screenshot Parser Button
+        NeomorphicButton(
+            onClick = { pickImage() },
+            modifier = Modifier.fillMaxWidth(),
+            backgroundColor = YellowPrimary
+        ) {
+            Icon(
+                imageVector = Icons.Default.CameraAlt,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = if (uiState.isParsingScreenshot) "Parsing Screenshot..." else "Screenshot Se Transaction Add Karo",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )
@@ -92,17 +160,60 @@ fun TrackerScreen(
             Spacer(modifier = Modifier.height(16.dp))
         }
         
-        // Transaction List
-        if (uiState.transactions.isEmpty() && !uiState.isSyncing) {
-            EmptyTransactionState()
-        } else {
-            TransactionList(
-                transactions = uiState.filteredTransactions,
-                isSyncing = uiState.isSyncing
+        // Error message
+        uiState.error?.let { error ->
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Error: $error",
+                color = RedDanger,
+                style = MaterialTheme.typography.bodySmall
             )
         }
         
+        // Transaction List
+        if (uiState.transactions.isEmpty() && !uiState.isSyncing && !uiState.isParsingScreenshot) {
+            EmptyTransactionState()
+        } else {
+            if (uiState.isSyncing || uiState.isParsingScreenshot) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = YellowPrimary)
+                }
+            } else {
+                TransactionList(
+                    transactions = uiState.filteredTransactions,
+                    isSyncing = uiState.isSyncing
+                )
+            }
+        }
+        
         Spacer(modifier = Modifier.height(100.dp)) // Space for bottom nav
+    }
+    
+    // SMS Permission Rationale Dialog
+    if (showSmsPermissionRationale) {
+        SmsPermissionRationaleDialog(
+            onDismiss = { showSmsPermissionRationale = false },
+            onConfirm = {
+                showSmsPermissionRationale = false
+                requestSmsPermission()
+            }
+        )
+    }
+    
+    // SMS Permission Denied Dialog
+    if (showSmsPermissionDenied) {
+        SmsPermissionDeniedDialog(
+            onDismiss = { showSmsPermissionDenied = false },
+            onOpenSettings = {
+                context.openAppSettings()
+                showSmsPermissionDenied = false
+            }
+        )
     }
 }
 
@@ -176,7 +287,7 @@ fun TransactionSummaryCard(
                 Text(
                     text = "Kharcha",
                     style = MaterialTheme.typography.labelMedium,
-                    color = TextSecondary
+                    color = TextGray  // Updated to TextGray
                 )
                 Text(
                     text = "-₹$totalExpense",
@@ -197,7 +308,7 @@ fun TransactionSummaryCard(
                 Text(
                     text = "Income",
                     style = MaterialTheme.typography.labelMedium,
-                    color = TextSecondary
+                    color = TextGray  // Updated to TextGray
                 )
                 Text(
                     text = "+₹$totalIncome",
@@ -272,7 +383,7 @@ fun TransactionItemCard(
                         text = transaction.merchant,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Medium,
-                        color = TextPrimary
+                        color = TextWhite  // Updated to TextWhite
                     )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -337,12 +448,12 @@ fun EmptyTransactionState() {
             Text(
                 text = "Koi transaction nahi hai",
                 style = MaterialTheme.typography.titleMedium,
-                color = TextSecondary
+                color = TextGray  // Updated to TextGray
             )
             Text(
                 text = "SMS Sync karo upar se",
                 style = MaterialTheme.typography.bodyMedium,
-                color = TextSecondary
+                color = TextGray  // Updated to TextGray
             )
         }
     }

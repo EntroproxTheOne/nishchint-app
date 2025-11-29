@@ -62,7 +62,7 @@ fun GoalsScreen(
             text = "🎯 Goals",
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
-            color = TextPrimary
+            color = TextWhite  // Updated to TextWhite
         )
         
         Spacer(modifier = Modifier.height(24.dp))
@@ -142,7 +142,7 @@ fun BikeProgressCard(
                 text = goalName,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                color = TextPrimary
+                color = TextWhite  // Updated to TextWhite
             )
             
             Spacer(modifier = Modifier.height(24.dp))
@@ -172,7 +172,7 @@ fun BikeProgressCard(
             Text(
                 text = "of ₹$target",
                 style = MaterialTheme.typography.bodyLarge,
-                color = TextSecondary
+                color = TextGray  // Updated to TextGray
             )
             
             Spacer(modifier = Modifier.height(16.dp))
@@ -193,7 +193,7 @@ fun BikeProgressCard(
             Text(
                 text = "${(animatedProgress * 100).toInt()}% complete",
                 style = MaterialTheme.typography.labelMedium,
-                color = TextSecondary
+                color = TextGray  // Updated to TextGray
             )
         }
     }
@@ -320,12 +320,12 @@ fun StreakCard(
                         text = "$streakDays din ka streak!",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = TextPrimary
+                        color = TextWhite  // Updated to TextWhite
                     )
                     Text(
                         text = "Aaj bhi ₹50 bachao",
                         style = MaterialTheme.typography.bodySmall,
-                        color = TextSecondary
+                        color = TextGray  // Updated to TextGray
                     )
                 }
             }
@@ -369,8 +369,8 @@ fun ScratchCardTrigger(
             )
             Spacer(modifier = Modifier.height(8.dp))
             NeomorphicButton(
-                onClick = onClick,
-                backgroundColor = GoldPrimary
+                onClick = onClick
+                // Using default yellow background
             ) {
                 Text("Scratch Karo!")
             }
@@ -404,7 +404,7 @@ fun ScratchCardDialog(
                 Text(
                     text = "Scratch karo reward dekhne ke liye!",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = TextSecondary
+                    color = TextGray  // Updated to TextGray
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 
@@ -453,7 +453,7 @@ fun ScratchCardDialog(
             if (scratchProgress >= 0.5f) {
                 Button(
                     onClick = onReveal,
-                    colors = ButtonDefaults.buttonColors(containerColor = GoldPrimary)
+                    colors = ButtonDefaults.buttonColors(containerColor = YellowPrimary)
                 ) {
                     Text("Claim Reward!")
                 }
@@ -495,7 +495,7 @@ fun RewardCard(
                 Text(
                     text = reward,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = TextSecondary
+                    color = TextGray  // Updated to TextGray
                 )
             }
         }
@@ -512,13 +512,13 @@ fun TipsCard() {
                 text = "💡 Savings Tip",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = TextPrimary
+                color = TextWhite  // Updated to TextWhite
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Roz ₹50 bachao, 6 mahine mein ₹9,000! Bike ka down payment almost ready! 🏍️",
                 style = MaterialTheme.typography.bodyMedium,
-                color = TextSecondary
+                color = TextGray  // Updated to TextGray
             )
         }
     }

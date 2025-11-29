@@ -1,13 +1,16 @@
 package com.nischint.app.ui.screens.home
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.nischint.app.data.api.ApiClient
 import com.nischint.app.data.api.MockData
+import com.nischint.app.data.database.AppDatabase
 import com.nischint.app.data.models.DashboardResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -17,7 +20,9 @@ data class HomeUiState(
     val error: String? = null
 )
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
+    
+    private val database = AppDatabase.getDatabase(application)
     
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -27,29 +32,41 @@ class HomeViewModel : ViewModel() {
             _uiState.update { it.copy(isLoading = true, error = null) }
             
             try {
+                // Load user name from database
+                val user = database.userDao().getCurrentUser().firstOrNull()
+                val userName = user?.name ?: "User"  // Default to "User" if no name found
+                
                 if (ApiClient.shouldUseMock()) {
-                    // Use mock data
+                    // Use mock data but replace name with actual user name
                     _uiState.update { 
                         it.copy(
-                            dashboard = MockData.dashboard,
+                            dashboard = MockData.dashboard.copy(name = userName),
                             isLoading = false
                         )
                     }
                 } else {
                     // Use real API
                     val response = ApiClient.apiService.getDashboard()
+                    // Replace name with actual user name from database
                     _uiState.update { 
                         it.copy(
-                            dashboard = response,
+                            dashboard = response.copy(name = userName),
                             isLoading = false
                         )
                     }
                 }
             } catch (e: Exception) {
-                // Fallback to mock data on error
+                // Fallback to mock data on error, but use actual user name
+                val user = try {
+                    database.userDao().getCurrentUser().firstOrNull()
+                } catch (dbError: Exception) {
+                    null
+                }
+                val userName = user?.name ?: "User"
+                
                 _uiState.update { 
                     it.copy(
-                        dashboard = MockData.dashboard,
+                        dashboard = MockData.dashboard.copy(name = userName),
                         isLoading = false,
                         error = e.message
                     )

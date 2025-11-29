@@ -57,13 +57,20 @@ fun SpeedometerGauge(
     ) {
         // Draw the gauge arc
         Canvas(modifier = Modifier.size(size)) {
-            val strokeWidth = 24.dp.toPx()
+            val strokeWidth = 20.dp.toPx()
             val arcSize = Size(size.toPx() - strokeWidth, size.toPx() - strokeWidth)
             val topLeft = Offset(strokeWidth / 2, strokeWidth / 2)
             
-            // Background arc (gray)
+            // Dark background circle (inside the gauge)
+            drawCircle(
+                color = BackgroundDark,
+                radius = (size.toPx() / 2) - strokeWidth / 2,
+                center = Offset(size.toPx() / 2, size.toPx() / 2)
+            )
+            
+            // Background arc (dark gray - unfilled portion)
             drawArc(
-                color = ShadowDark.copy(alpha = 0.3f),
+                color = SurfaceVariant.copy(alpha = 0.4f),
                 startAngle = 150f,
                 sweepAngle = 240f,
                 useCenter = false,
@@ -72,48 +79,19 @@ fun SpeedometerGauge(
                 style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
             )
             
-            // Gradient arc (Red -> Yellow -> Green from left to right)
-            val gradientBrush = Brush.sweepGradient(
-                0f to RedDanger,
-                0.3f to OrangeWarning,
-                0.6f to GoldPrimary,
-                1f to TealSafe,
-                center = Offset(size.toPx() / 2, size.toPx() / 2)
-            )
-            
-            // Draw colored segments
-            // Red zone (0-30%)
-            drawArc(
-                color = RedDanger,
-                startAngle = 150f,
-                sweepAngle = 72f,  // 30% of 240
-                useCenter = false,
-                topLeft = topLeft,
-                size = arcSize,
-                style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
-            )
-            
-            // Yellow zone (30-60%)
-            drawArc(
-                color = OrangeWarning,
-                startAngle = 222f,
-                sweepAngle = 72f,
-                useCenter = false,
-                topLeft = topLeft,
-                size = arcSize,
-                style = Stroke(width = strokeWidth, cap = StrokeCap.Butt)
-            )
-            
-            // Green zone (60-100%)
-            drawArc(
-                color = TealSafe,
-                startAngle = 294f,
-                sweepAngle = 96f,
-                useCenter = false,
-                topLeft = topLeft,
-                size = arcSize,
-                style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
-            )
+            // Filled arc (yellow - based on progress)
+            // Only show progress if there's any
+            if (animatedProgress > 0f) {
+                drawArc(
+                    color = YellowPrimary,
+                    startAngle = 150f,
+                    sweepAngle = 240f * animatedProgress,
+                    useCenter = false,
+                    topLeft = topLeft,
+                    size = arcSize,
+                    style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+                )
+            }
             
             // Draw the needle
             val needleAngle = 150f + (animatedProgress * 240f)
@@ -121,37 +99,38 @@ fun SpeedometerGauge(
             val centerX = size.toPx() / 2
             val centerY = size.toPx() / 2
             
-            // Needle shadow
-            rotate(needleAngle + 2f, pivot = Offset(centerX, centerY)) {
+            // Needle shadow (subtle)
+            rotate(needleAngle + 1f, pivot = Offset(centerX, centerY)) {
                 drawLine(
-                    color = ShadowDark.copy(alpha = 0.3f),
+                    color = ShadowColor.copy(alpha = 0.5f),
                     start = Offset(centerX, centerY),
                     end = Offset(centerX, centerY - needleLength),
-                    strokeWidth = 6.dp.toPx(),
+                    strokeWidth = 5.dp.toPx(),
                     cap = StrokeCap.Round
                 )
             }
             
-            // Main needle
+            // Main needle (yellow)
             rotate(needleAngle, pivot = Offset(centerX, centerY)) {
                 drawLine(
-                    color = riskColor,
+                    color = YellowPrimary,
                     start = Offset(centerX, centerY),
                     end = Offset(centerX, centerY - needleLength),
-                    strokeWidth = 4.dp.toPx(),
+                    strokeWidth = 3.dp.toPx(),
                     cap = StrokeCap.Round
                 )
             }
             
-            // Center circle
+            // Center circle (dark background)
             drawCircle(
-                color = Surface,
-                radius = 20.dp.toPx(),
+                color = SurfaceDark,
+                radius = 18.dp.toPx(),
                 center = Offset(centerX, centerY)
             )
+            // Center dot (yellow)
             drawCircle(
-                color = riskColor,
-                radius = 12.dp.toPx(),
+                color = YellowPrimary,
+                radius = 10.dp.toPx(),
                 center = Offset(centerX, centerY)
             )
         }
@@ -167,12 +146,12 @@ fun SpeedometerGauge(
                     fontWeight = FontWeight.Bold,
                     fontSize = 36.sp
                 ),
-                color = riskColor
+                color = YellowPrimary  // Yellow text
             )
             Text(
                 text = "Safe to Spend",
                 style = MaterialTheme.typography.bodyMedium,
-                color = TextSecondary
+                color = TextGray  // Gray text
             )
         }
     }
@@ -202,9 +181,9 @@ fun MiniGauge(
             val arcSize = Size(40.dp.toPx() - strokeWidth, 40.dp.toPx() - strokeWidth)
             val topLeft = Offset(strokeWidth / 2, strokeWidth / 2)
             
-            // Background
+            // Background (dark gray)
             drawArc(
-                color = ShadowDark.copy(alpha = 0.3f),
+                color = SurfaceVariant.copy(alpha = 0.4f),
                 startAngle = 150f,
                 sweepAngle = 240f,
                 useCenter = false,
@@ -213,9 +192,9 @@ fun MiniGauge(
                 style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
             )
             
-            // Progress
+            // Progress (yellow)
             drawArc(
-                color = riskColor,
+                color = YellowPrimary,
                 startAngle = 150f,
                 sweepAngle = 240f * progress,
                 useCenter = false,
@@ -230,12 +209,12 @@ fun MiniGauge(
                 text = "₹$value",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = riskColor
+                color = YellowPrimary  // Yellow text
             )
             Text(
                 text = "Safe",
                 style = MaterialTheme.typography.labelSmall,
-                color = TextSecondary
+                color = TextGray  // Gray text
             )
         }
     }

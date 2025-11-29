@@ -65,7 +65,8 @@ data class OnboardingQuestion(
     val id: String,
     val text: String,
     val options: List<String>,
-    @SerializedName("is_final") val isFinal: Boolean = false
+    @SerializedName("is_final") val isFinal: Boolean = false,
+    @SerializedName("is_ai_generated") val isAiGenerated: Boolean = false  // Track if AI-generated
 )
 
 data class AnswerRequest(
