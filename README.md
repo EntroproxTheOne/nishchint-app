@@ -338,5 +338,7 @@ For issues, questions, or contributions:
 
 [⭐ Star this repo](https://github.com/EntroproxTheOne/nishchint-app) if you find it helpful!
 
+BUILT FOR A HACKATHON - MUMBAI-HACKS
+
 </div>
 
